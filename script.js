@@ -24,8 +24,10 @@ class Calculator {
   }
 
   delete() {
-    this.currentOperand = this.currentOperand.toString().slice(0, -1)
-    if(this.currentOperand == ''){
+    if(this.currentOperand !== ''){
+      this.currentOperand = this.currentOperand.toString().slice(0, -1)
+    }
+    else{ 
       this.currentOperand=this.previousOperand
       this.currentOperandTextElement.innerText =`${this.getDisplayNumber(this.currentOperand)}`
       this.operation=''
@@ -35,6 +37,10 @@ class Calculator {
 
   appendNumber(number) {
     if (number === '.' && this.currentOperand.includes('.')) return
+    if (this.currentOperand =='' && number =='.' ) {
+      this.currentOperand = 0 + number.toString()
+    return this.currentOperand}
+    if (this.currentOperand >=10000000000 )return
     this.currentOperand = this.currentOperand.toString() + number.toString()
   }
 
@@ -160,12 +166,18 @@ class Calculator {
     const integerDigits = parseFloat(stringNumber.split('.')[0])
     const decimalDigits = stringNumber.split('.')[1]
     let integerDisplay
+    if (integerDigits > 99999999999){
+      integerDisplay=integerDigits.toExponential(3)
+      if (integerDigits == 'Infinity' || integerDisplay=='∞'){
+        this.currentOperandTextElement.innerText = 'Error'}
+      else return `${integerDisplay}`}
     if (isNaN(integerDigits)) {
       integerDisplay = ''
     } else {
       integerDisplay = integerDigits.toLocaleString('en', { maximumFractionDigits: 0 })
     }
     if (decimalDigits != null) {
+    
       return `${integerDisplay}.${decimalDigits}`
     } else {
       return integerDisplay
